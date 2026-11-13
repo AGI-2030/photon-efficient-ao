@@ -1,0 +1,16 @@
+# Environment of the network runs of the paper (NVIDIA A100, CUDA 12.1).
+# conda env create -f environment.yml, then conda activate photon-efficient-ao
+name: photon-efficient-ao
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu121
+      - torch==2.5.1
+      - numpy==2.4.6
+      - scipy==1.17.1
+      - matplotlib==3.11.1
+      - pytest
+      - -e .

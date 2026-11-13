@@ -1,0 +1,87 @@
+# Plain CNN, input of two frames without the correction difference, trained on frozen-flow turbulence (Fig. 2, Table S1).
+name = "plain_cnn_two_frames"
+seed = 20261020
+
+# settings of the released weights; the rollout batch changes the random stream
+[run]
+inputs = "two_frames"
+rollout_batch = 128
+micro_batch = 64
+
+[optics]
+wavelength_m = 1.08e-06
+focal_length_m = 5.8
+pixel_pitch_m = 5.86e-06
+exit_aperture_m = 0.1
+fft_size = 512
+pupil_pixels = 0
+roi_half_lambda_over_d = 10.0
+network_image_size = 128
+diversity_defocus_rad = 0.0
+noll_start = 4
+nmodes = 33
+
+[turbulence]
+screen_size = 1024
+outer_scale_over_d = 10.0
+inner_scale_over_d = 0.01
+subharmonics = true
+d_over_r0_range = [0.6, 8.0]
+tau_ratio_range = [0.03, 1.0]
+
+[camera]
+photons_range = [1000.0, 1000000.0]
+read_noise_e = 7.0
+asinh_scale = 0.02
+
+[loop]
+gain = 0.5
+command_delay_frames = 1
+frames_per_episode = 20
+probe_defocus_rad = 0.2
+command_limit_rad = 3.0
+
+[dagger]
+iterations = 2000
+episodes_per_iteration = 256
+rollout_batch = 256
+updates_per_iteration = 40
+batch_size = 256
+buffer_capacity = 60000
+warmup_iterations = 100
+warmup_oracle_noise_rad = 0.3
+oracle_noise_rad = 0.05
+beta_start = 0.8
+beta_end = 0.0
+beta_decay_iterations = 800
+curriculum_iterations = 600
+curriculum_start_d_over_r0_max = 2.0
+curriculum_start_tau_ratio_max = 0.3
+
+[model]
+name = "plain_cnn"
+widths = [48, 96, 192, 256]
+blocks = [2, 2, 2, 2]
+condition_dim = 128
+groups = 8
+
+[training]
+learning_rate = 0.0003
+weight_decay = 0.0001
+warmup_updates = 1000
+gradient_clip_norm = 1.0
+loss_floor_rad = 0.05
+final_lr_fraction = 0.05
+device = "cuda"
+precision = "bf16"
+
+[evaluation]
+interval = 50
+checkpoint_interval = 50
+seed = 900000
+episodes_per_cell = 64
+frames_per_episode = 30
+steady_frames = 10
+d_over_r0 = [0.6, 1.0, 2.0, 4.0, 6.0, 8.0]
+tau_ratio = [0.1, 0.3, 1.0]
+photons = [10000.0, 1000000.0]

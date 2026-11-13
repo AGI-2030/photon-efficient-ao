@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photon-efficient-ao"
+version = "1.0.0"
+description = "Image-based closed-loop adaptive optics without a wavefront sensor: simulations, networks and figures"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["numpy>=2.0", "scipy>=1.10", "matplotlib>=3.7", "tomli>=2; python_version < '3.11'"]
+
+[project.optional-dependencies]
+network = ["torch>=2.3"]
+test = ["pytest"]
+
+[tool.setuptools]
+packages = ["aosim", "aonet", "simulations", "lab"]
+
+[tool.black]
+line-length = 110
